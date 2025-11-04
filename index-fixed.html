@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TextStyler — ИИ пишет твоим стилем: анализ ДНК текста, до 10 стилей, быстрый контент</title>
+  <meta name="description" content="TextСтиль-бот анализирует ДНК вашего текста и создаёт цифровую копию стиля. Посты, письма и статьи в вашем голосе. 3 дня бесплатно, без карты." />
+  <meta name="keywords" content="TextСтиль-бот, ИИ копирайтер, тональность текста, стиль письма, генератор текста, цифровой двойник, tone of voice, ИИ бот" />
+  <link rel="canonical" href="https://textstyler.neurofabrika.store/" />
+  <meta name="robots" content="index,follow" />
+  
+  <!-- Preconnect для производительности -->
+  <link rel="preconnect" href="https://mc.yandex.ru">
+  <link rel="dns-prefetch" href="https://t.me">
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="TextСтиль-бот — ИИ пишет твоим стилем" />
+  <meta property="og:description" content="Анализ ДНК текста, до 10 стилей, быстрый контент. Попробуйте 3 дня бесплатно." />
+  <meta property="og:image" content="https://textstyler.neurofabrika.store/og-cover.jpg" />
+  <meta property="og:url" content="https://textstyler.neurofabrika.store/" />
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="TextStyler — ИИ пишет твоим стилем" />
+  <meta name="twitter:description" content="Анализ ДНК текста, до 10 стилей, быстрый контент. Попробуйте 3 дня бесплатно." />
+  <meta name="twitter:image" content="https://textstyler.neurofabrika.store/og-cover.jpg" />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+  <style>
+    /* ===== КОНФИГУРАЦИЯ (вынесена в начало) ===== */
+    /* Изменяемые переменные */
+    
+    /* ===== CSS Variables ===== */
+    :root{
+      --bg:#ffffff; --ink:#1a1a1a; --muted:#666; --panel:#ffffff; --panel-2:#f5f5f5; --stroke:#eaeaea; --accent:#000;
+    }
+    [data-theme="dark"]{
+      --bg:#0d0f12; --ink:#e7e9ee; --muted:#9aa3b2; --panel:#11141a; --panel-2:#0f1218; --stroke:#1f2430; --accent:#e7e9ee;
+    }
+    
+    /* ===== Base Styles ===== */
+    *{margin:0;padding:0;box-sizing:border-box}
+    html, body { max-width:100%; overflow-x:hidden; }
+    body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+
+    /* ===== Sticky top bar ===== */
+    .topbar{position:sticky;top:0;z-index:999;padding:14px 5%;display:flex;align-items:center;justify-content:space-between;background:var(--panel);border-bottom:1px solid var(--stroke);backdrop-filter:saturate(140%) blur(6px)}
+    .logo{font-size:20px;font-weight:800;letter-spacing:-.3px}
+    .topnav{display:flex;gap:24px;align-items:center}
+    .topnav a{font-size:14px;color:var(--ink);text-decoration:none;opacity:.85;border-bottom:2px solid transparent;padding:8px 0}
+    .topnav a:hover{opacity:1;border-bottom-color:var(--ink)}
+    
+    /* Мобильное меню */
+    @media (max-width: 768px) {
+      .topnav{display:none}
+      .mobile-menu-btn{display:block;background:none;border:2px solid var(--ink);padding:8px 12px;cursor:pointer;font-size:18px}
+      .topnav.active{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:var(--panel);border-bottom:1px solid var(--stroke);padding:20px 5%}
+    }
+    .mobile-menu-btn{display:none}
+
+    /* ===== Theme Toggle ===== */
+    .theme-toggle{--h:34px;position:relative;width:86px;height:var(--h);cursor:pointer;user-select:none;border:2px solid var(--ink);border-radius:999px;background:transparent;box-shadow:2px 2px 0 var(--ink)}
+    .theme-toggle .track{position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent 0 8px, rgba(0,0,0,.06) 8px 16px);border-radius:999px;overflow:hidden}
+    [data-theme="dark"] .theme-toggle .track{background:repeating-linear-gradient(135deg,transparent 0 8px, rgba(255,255,255,.08) 8px 16px)}
+    .theme-toggle .thumb{position:absolute;top:2px;left:2px;width:28px;height:28px;border-radius:50%;background:var(--panel-2);border:2px solid var(--ink);transition:left .25s ease;box-shadow:1px 1px 0 var(--ink)}
+    [data-theme="dark"] .theme-toggle .thumb{left:calc(100% - 30px)}
+    .theme-toggle .emoji{position:absolute;top:50%;transform:translateY(-50%);font-size:16px;opacity:.9;pointer-events:none}
+    .theme-toggle .sun{left:10px} .theme-toggle .moon{right:10px}
+
+    /* ===== Geometric Background ===== */
+    .geometric-bg{position:fixed;inset:0;z-index:-1;opacity:.05;pointer-events:none}
+    .line{position:absolute;background:var(--ink);transform-origin:center;will-change:transform}
+
+    /* ===== Hero + Carousel ===== */
+    .hero{padding:90px 5% 40px;text-align:center;position:relative;overflow:hidden}
+    .carousel{overflow:hidden;position:relative;contain:layout paint}
+    .carousel-container{display:flex;transition:transform .5s ease;max-width:1200px;margin:0 auto;will-change:transform;touch-action:pan-y pinch-zoom} 
+    .carousel-container.dragging{cursor:grabbing;transition:none}
+    .carousel-slide{min-width:100%;flex:0 0 100%;padding:40px;box-sizing:border-box} 
+    .carousel-slide h1{font-size:clamp(48px,8vw,92px);font-weight:800;margin-bottom:20px;line-height:1.1;letter-spacing:-2px}
+    .carousel-slide p{font-size:clamp(18px,2.5vw,22px);color:var(--muted);max-width:850px;margin:0 auto;line-height:1.6}
+    .carousel-dots{display:flex;justify-content:center;gap:12px;margin:26px 0 6px}
+    .dot{width:12px;height:12px;background:var(--stroke);cursor:pointer;transition:all .3s;border-radius:2px;border:none}
+    .dot.active{background:var(--accent);width:40px}
+
+    /* ===== Buttons (geometric) ===== */
+    .btn-geo{--bcol:var(--ink);--bgcol:transparent;--tx:var(--ink);--hatch:rgba(0,0,0,.06);position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:16px 42px;cursor:pointer;font-weight:800;background:none;border:none;color:var(--tx);transition:transform .2s ease; -webkit-tap-highlight-color:transparent;font-size:16px}
+    [data-theme="dark"] .btn-geo{--hatch:rgba(255,255,255,.08)}
+    .btn-geo::before,.btn-geo::after{content:"";position:absolute;inset:0;z-index:-1;clip-path:polygon(10% 0,100% 0,100% 78%,92% 100%,0 100%,0 18%)}
+    .btn-geo::before{background:repeating-linear-gradient(135deg,transparent 0 8px,var(--hatch) 8px 16px),var(--bgcol);transition:background-position .3s ease}
+    .btn-geo::after{border:2px solid var(--bcol);box-shadow:2px 2px 0 var(--bcol)}
+    .btn-geo:hover{transform:translateY(-1px)}
+    .btn-geo:disabled{opacity:.5;cursor:not-allowed}
+    .btn-geo--primary{--bgcol:var(--ink);--bcol:var(--ink);--tx:var(--bg)}
+    .btn-geo--outline{--bgcol:transparent;--bcol:var(--ink);--tx:var(--ink)}
+    .arrow{width:16px;height:16px;display:inline-block;position:relative}
+    .arrow:before{content:"";position:absolute;width:16px;height:2px;top:7px;left:0;background:currentColor}
+    .arrow:after{content:"";position:absolute;width:10px;height:10px;right:0;top:3px;border-right:2px solid currentColor;border-top:2px solid currentColor;transform:rotate(45deg)}
+
+    /* ===== Illustration ===== */
+    svg,img{max-width:100%;height:auto;display:block}
+    .geometric-illustration{width:100%;max-width:900px;height:400px;margin:40px auto 70px;position:relative;overflow:hidden}
+    .geo-shape{position:absolute;stroke:var(--ink);fill:none;stroke-width:2;animation:draw 3s ease-in-out infinite alternate}
+    @keyframes draw{from{stroke-dashoffset:1000}to{stroke-dashoffset:0}}
+
+    /* ===== Features ===== */
+    .features{padding:80px 5% 100px;background:var(--panel);position:relative}
+    .features::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--ink),transparent);opacity:.15}
+    .features h2{font-size:clamp(40px,5vw,56px);margin-bottom:60px;font-weight:800;text-align:center}
+    .features-grid{display:grid;grid-template-columns:1fr;gap:40px;max-width:1200px;margin:0 auto}
+    @media (min-width:768px){.features-grid{grid-template-columns:repeat(2,1fr)}}
+    @media (min-width:1200px){.features-grid{grid-template-columns:repeat(4,1fr)}}
+    .feature{position:relative;padding:32px;transition:.25s}
+    .feature:hover{transform:translateY(-6px)}
+    .feature h3{font-size:22px;margin-bottom:10px;font-weight:700}
+    .feature p{font-size:16px;color:var(--muted);line-height:1.65}
+    .striped-number{font-size:72px;font-weight:900;opacity:.15;line-height:1;margin-bottom:14px;background:repeating-linear-gradient(0deg,var(--ink),var(--ink) 3px,transparent 3px,transparent 8px);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+    /* ===== Use Cases ===== */
+    .use-cases{padding:90px 5%;text-align:center}
+    .use-cases h2{font-size:clamp(40px,5vw,56px);margin-bottom:60px;font-weight:800}
+    .cases-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:32px;max-width:1200px;margin:0 auto}
+    .case-card{background:var(--panel);padding:32px;border:2px solid var(--stroke);transition:.25s;position:relative}
+    .case-card:before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:var(--ink);opacity:.12}
+    .case-card:hover{transform:translateY(-6px);box-shadow:0 18px 36px rgba(0,0,0,.12)}
+
+    /* ===== Pricing ===== */
+    .pricing{padding:100px 5%;text-align:center;background:var(--panel-2)}
+    .pricing h2{font-size:clamp(40px,5vw,56px);margin-bottom:18px;font-weight:800}
+    .pricing-subtitle{font-size:18px;color:var(--muted);margin-bottom:60px}
+    .pricing-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:40px;max-width:1300px;margin:0 auto;overflow:hidden}
+    .pricing-card{background:var(--panel);padding:44px;border:2px solid var(--stroke);transition:.25s;position:relative}
+    .pricing-card.popular{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink) inset}
+    .pricing-card.disabled{opacity:.6;pointer-events:none}
+    .popular-badge,.soon-badge{position:absolute;top:-15px;left:50%;transform:translateX(-50%);padding:8px 24px;font-size:12px;font-weight:700;letter-spacing:1px;color:var(--bg);background:var(--ink)}
+    .soon-badge{background:#999}
+    .pricing-card h3{font-size:26px;margin-bottom:8px;font-weight:800}
+    .pricing-card .subtitle{font-size:14px;color:var(--muted);margin-bottom:18px}
+    .price{font-size:46px;font-weight:900;margin-bottom:8px}
+    .price span{font-size:18px;font-weight:400;color:var(--muted)}
+    .price-yearly{font-size:14px;color:var(--muted);margin-bottom:24px}
+    .pricing-features{list-style:none;text-align:left;margin:24px 0}
+    .pricing-features li{padding:10px 0;border-bottom:1px solid var(--stroke);font-size:16px}
+    .pricing-features li:before{content:'✓';margin-right:10px;font-weight:700}
+
+    /* ===== Sections ===== */
+    .section{padding:90px 5%}
+    .section h2{font-size:clamp(32px,4vw,44px);margin-bottom:24px;font-weight:800}
+    .muted{color:var(--muted)}
+
+    /* ===== Final CTA ===== */
+    .final-cta{padding:110px 5%;text-align:center;background:var(--ink);color:var(--bg);position:relative;overflow:hidden}
+    .final-cta:before{content:'';position:absolute;inset:-50% -50% 0 0;background:repeating-linear-gradient(45deg,transparent,transparent 40px,rgba(255,255,255,.06) 40px,rgba(255,255,255,.06) 80px);animation:move 20s linear infinite}
+    @keyframes move{0%{transform:translate(0,0)}100%{transform:translate(80px,80px)}}
+    .final-cta h2{color:var(--bg)}
+
+    /* ===== Footer ===== */
+    footer{padding:40px 5%;text-align:center;color:var(--muted);background:var(--panel)}
+    footer a{color:var(--ink);text-decoration:none;font-weight:600}
+    footer a:hover{text-decoration:underline}
+
+    /* ===== Sticky Support Button ===== */
+    .support-button{position:fixed;bottom:30px;right:30px;width:60px;height:60px;background:var(--panel);color:var(--ink);border:2px solid var(--ink);border-radius:50%;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.15);transition:.25s;z-index:1000;display:flex;align-items:center;justify-content:center}
+    .support-button:hover{transform:scale(1.08)}
+
+    /* ===== Corner Cat (with fallback) ===== */
+    .corner-cat{position:fixed;left:16px;bottom:16px;width:min(22vw,140px);height:auto;z-index:998;pointer-events:none;filter:drop-shadow(0 4px 16px rgba(0,0,0,.15));opacity:0;transition:opacity .3s}
+    .corner-cat.loaded{opacity:1}
+    .cat-light{display:block}.cat-dark{display:none}
+    [data-theme="dark"] .cat-light{display:none}
+    [data-theme="dark"] .cat-dark{display:block}
+
+    /* ===== Time Saver Section ===== */
+    .time-saver{padding:100px 5%;background:var(--panel-2);overflow:hidden}
+    .time-saver-container{display:grid;grid-template-columns:1fr;gap:60px;max-width:1200px;margin:0 auto;align-items:center}
+    @media (min-width:1024px){.time-saver-container{grid-template-columns:1fr 1fr}}
+    .time-saver-content h2{font-size:clamp(36px,5vw,52px);margin-bottom:24px;font-weight:800;line-height:1.2}
+    .time-saver-content p{font-size:18px;color:var(--muted);margin-bottom:32px;line-height:1.65}
+    
+    .calculator{background:var(--panel);padding:32px;border:2px solid var(--stroke);position:relative}
+    .calculator:before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:var(--ink);opacity:.12}
+    .calculator h3{font-size:20px;margin-bottom:20px;font-weight:700}
+    
+    .time-input-group{margin-bottom:24px}
+    .time-input-group label{display:block;font-size:14px;color:var(--muted);margin-bottom:8px;font-weight:600}
+    .time-slider{width:100%;height:8px;background:var(--stroke);border-radius:4px;outline:none;-webkit-appearance:none;cursor:pointer}
+    .time-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;background:var(--accent);border:3px solid var(--panel);border-radius:50%;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+    .time-slider::-moz-range-thumb{width:24px;height:24px;background:var(--accent);border:3px solid var(--panel);border-radius:50%;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+    .time-value{font-size:28px;font-weight:900;color:var(--accent);margin-top:8px}
+    
+    .time-comparison{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:24px;padding:20px;background:var(--panel-2);border-radius:4px}
+    .time-comparison .before,.time-comparison .after{text-align:center;padding:16px}
+    .time-comparison .before{border-right:2px solid var(--stroke)}
+    .time-comparison .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+    .time-comparison .value{font-size:36px;font-weight:900;line-height:1;margin:8px 0}
+    .time-comparison .before .value{color:#ef4444}
+    .time-comparison .after .value{color:#22c55e}
+    .time-comparison .desc{font-size:14px;color:var(--muted)}
+    .savings-badge{display:inline-block;padding:8px 16px;background:var(--accent);color:var(--bg);font-weight:700;border-radius:4px;margin-top:12px;font-size:14px}
+    
+    .savings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}
+    @media (max-width:768px){.savings-grid{grid-template-columns:1fr}}
+    .savings-card{background:var(--panel-2);padding:20px;border-radius:4px;text-align:center;border:2px solid transparent;transition:.25s}
+    .savings-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+    .savings-card .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+    .savings-card .value{font-size:32px;font-weight:900;color:var(--accent);line-height:1}
+    .savings-card .unit{font-size:14px;color:var(--muted);margin-top:4px}
+    .savings-card.highlight{border-color:var(--accent);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+    .savings-card.highlight .value{font-size:36px}
+    
+    .phone-mockup{position:relative;max-width:400px;margin:0 auto;filter:drop-shadow(0 24px 48px rgba(0,0,0,.25))}
+    .phone-mockup img{width:100%;height:auto;display:block}
+    
+    @media (max-width:1023px){
+      .time-saver-container{grid-template-columns:1fr}
+      .phone-mockup{max-width:300px;order:-1}
+    }
+  </style>
+</head>
+<body>
+  <!-- ===== Sticky Top Bar ===== -->
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:24px">
+      <div class="logo">TextStyler</div>
+      <nav class="topnav" aria-label="Главное меню" id="mainNav">
+        <a href="#pricing">Тарифы и оплата</a>
+        <a href="#reviews">Отзывы</a>
+        <a href="#referrals">Реферальная программа</a>
+        <a href="#bots">Ещё боты</a>
+      </nav>
+    </div>
+    <div style="display:flex;gap:14px;align-items:center">
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Открыть меню">☰</button>
+      <div class="theme-toggle" id="themeToggle" title="Светлая / Тёмная тема" role="switch" aria-checked="false" aria-label="Переключить тему">
+        <div class="track"></div>
+        <div class="thumb"></div>
+        <div class="emoji sun">☀️</div>
+        <div class="emoji moon">🌙</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Background Lines ===== -->
+  <div class="geometric-bg" id="geometricBg" aria-hidden="true"></div>
+
+  <!-- ===== Corner Cat (with error handling) ===== -->
+  <img class="corner-cat cat-light" 
+       src="/assets/cat-light.png" 
+       alt="Кот (светлая тема)" 
+       loading="lazy"
+       onerror="this.style.display='none'" 
+       onload="this.classList.add('loaded')" />
+  <img class="corner-cat cat-dark"  
+       src="/assets/cat-dark.png" 
+       alt="Кот (тёмная тема)" 
+       loading="lazy"
+       onerror="this.style.display='none'"
+       onload="this.classList.add('loaded')" />
+
+  <main>
+    <!-- ===== Hero Section ===== -->
+    <section class="hero">
+      <div class="carousel" id="heroCarousel" role="region" aria-label="Преимущества сервиса" aria-roledescription="carousel">
+        <div class="carousel-container" id="carouselContainer" role="group" aria-live="polite">
+          <div class="carousel-slide" role="group" aria-label="1 из 3">
+            <h1>Освободи время. Сохрани стиль.</h1>
+            <p>ИИ-бот анализирует ДНК вашего текста и пишет посты за вас, пока вы занимаетесь тем, что важнее.</p>
+          </div>
+          <div class="carousel-slide" role="group" aria-label="2 из 3">
+            <h1>Бот, который пишет твоим стилем</h1>
+            <p>До 10 сохранённых стилей: деловой, дружеский, экспертный. Переключение одной командой.</p>
+          </div>
+          <div class="carousel-slide" role="group" aria-label="3 из 3">
+            <h1>Анализ по 7 параметрам</h1>
+            <p>Лексика, синтаксис, ритм, тональность и ещё. Результат неотличим от оригинала.</p>
+          </div>
+        </div>
+        <div class="carousel-dots" id="carouselDots" role="tablist" aria-label="Навигация по слайдам"></div>
+      </div>
+
+      <div style="margin-top:18px">
+        <button class="btn-geo btn-geo--outline" onclick="openTelegramBot()" aria-label="Перейти в Telegram бота">
+          Перейти в бота <span class="arrow"></span>
+        </button>
+      </div>
+
+      <div class="geometric-illustration" aria-hidden="true">
+        <svg width="100%" height="100%" viewBox="0 0 900 400">
+          <polyline class="geo-shape" points="100,300 200,100 350,250 500,80 650,200 800,120" style="stroke-dasharray:1000;stroke-dashoffset:1000"/>
+          <polygon class="geo-shape" points="450,200 480,250 520,250 550,200 520,150 480,150" style="stroke-dasharray:500;stroke-dashoffset:500;animation-delay:.5s"/>
+          <circle class="geo-shape" cx="200" cy="150" r="40" style="stroke-dasharray:300;stroke-dashoffset:300;animation-delay:1s"/>
+          <rect class="geo-shape" x="600" y="180" width="80" height="80" style="stroke-dasharray:400;stroke-dashoffset:400;animation-delay:1.5s"/>
+          <line class="geo-shape" x1="50" y1="350" x2="850" y2="50" style="stroke-dasharray:1200;stroke-dashoffset:1200;opacity:.3;animation-delay:2s"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ===== Time Saver Section ===== -->
+    <section class="time-saver">
+      <div class="time-saver-container">
+        <div class="time-saver-content">
+          <h2>Сколько времени ты тратишь на тексты?</h2>
+          <p>TextStyler экономит до 75% времени на создание контента. Двигай слайдер и смотри, сколько времени вернёшь себе.</p>
+          
+          <div class="calculator">
+            <h3>Калькулятор экономии времени</h3>
+            
+            <div class="time-input-group">
+              <label for="minutesPerDay">Сколько минут в день тратишь на тексты СЕЙЧАС?</label>
+              <input 
+                type="range" 
+                id="minutesPerDay" 
+                class="time-slider" 
+                min="15" 
+                max="240" 
+                value="60" 
+                step="15"
+                aria-label="Минуты в день"
+              />
+              <div class="time-value"><span id="minutesValue">60</span> минут/день</div>
+            </div>
+
+            <div class="time-comparison">
+              <div class="before">
+                <div class="label">Без TextStyler</div>
+                <div class="value" id="beforeValue">60</div>
+                <div class="desc">минут/день</div>
+              </div>
+              <div class="after">
+                <div class="label">С TextStyler</div>
+                <div class="value" id="afterValue">15</div>
+                <div class="desc">минут/день</div>
+                <div class="savings-badge">
+                  Экономия: <span id="savedValue">45</span> мин/день
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:32px">
+              <h4 style="font-size:18px;margin-bottom:16px;color:var(--muted)">Сколько времени сэкономишь:</h4>
+              <div class="savings-grid">
+                <div class="savings-card">
+                  <div class="label">В месяц</div>
+                  <div class="value" id="monthValue">22</div>
+                  <div class="unit">часа</div>
+                </div>
+                <div class="savings-card">
+                  <div class="label">В год</div>
+                  <div class="value" id="yearValue">273</div>
+                  <div class="unit">часов</div>
+                </div>
+                <div class="savings-card highlight">
+                  <div class="label">За 5 лет</div>
+                  <div class="value" id="fiveYearValue">57</div>
+                  <div class="unit">дней</div>
+                </div>
+                <div class="savings-card highlight">
+                  <div class="label">За 50 лет</div>
+                  <div class="value" id="fiftyYearValue">570</div>
+                  <div class="unit">дней</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:32px">
+            <button class="btn-geo btn-geo--primary" onclick="openTelegramBot('calculator')">
+              Начать экономить время <span class="arrow"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="phone-mockup">
+          <img 
+            src="https://customer-assets.emergentagent.com/job_stylebot-check/artifacts/92u2nwit_205shots_so.png" 
+            alt="TextStyler на телефоне" 
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Features ===== -->
+    <section class="features" id="how">
+      <h2>Как это работает</h2>
+      <div class="features-grid">
+        <div class="feature">
+          <div class="striped-number">01</div>
+          <h3>Анализ по 7 параметрам</h3>
+          <p>Лексика, синтаксис, тональность, ритм, морфология, прагматика, форматирование.</p>
+        </div>
+        <div class="feature">
+          <div class="striped-number">02</div>
+          <h3>Цифровая копия стиля</h3>
+          <p>Загружаете примеры — получаете «ДНК» вашего стиля. Пишет так, что не отличить.</p>
+        </div>
+        <div class="feature">
+          <div class="striped-number">03</div>
+          <h3>Экономия времени</h3>
+          <p>Готовые черновики за секунды вместо часов рутины.</p>
+        </div>
+        <div class="feature">
+          <div class="striped-number">04</div>
+          <h3>Множественные стили</h3>
+          <p>До 10 профилей. Переключение командой.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Use Cases ===== -->
+    <section class="use-cases" id="cases">
+      <h2>Кому это нужно</h2>
+      <div class="cases-grid">
+        <div class="case-card"><h3>Блогерам</h3><p>Больше контента без потери голоса. Скорость x10.</p></div>
+        <div class="case-card"><h3>Копирайтерам</h3><p>Портфолио тональностей под клиентов. Переключение за секунду.</p></div>
+        <div class="case-card"><h3>Коучам и психологам</h3><p>Терапевтический тон в любом формате, без разрыва интонации.</p></div>
+        <div class="case-card"><h3>Агентствам</h3><p>Единый tone of voice в командах и проектах.</p></div>
+        <div class="case-card"><h3>Фаундерам</h3><p>Ведите соцсети и рассылки в стиле фаундера, даже когда он занят.</p></div>
+        <div class="case-card"><h3>Маркетологам</h3><p>Быстрые А/Б-версии постов и писем в брендовом тоне.</p></div>
+      </div>
+    </section>
+
+    <!-- ===== Pricing ===== -->
+    <section class="pricing" id="pricing">
+      <h2>Тарифы</h2>
+      <p class="pricing-subtitle">Начните бесплатно. Апгрейд в любой момент.</p>
+      <div class="pricing-cards">
+        <div class="pricing-card">
+          <h3>STANDARD</h3>
+          <p class="subtitle">Для личного использования</p>
+          <div class="price">1,490₽<span> / месяц</span></div>
+          <p class="price-yearly">или 14,900₽ в год (экономия 2,980₽)</p>
+          <ul class="pricing-features">
+            <li>3 сохранённых стиля</li>
+            <li>Ограничение по объёму текста</li>
+            <li>Безлимит генераций</li>
+            <li>До 20 примеров для анализа</li>
+            <li>Экспорт стилей</li>
+          </ul>
+          <button class="btn-geo btn-geo--primary" onclick="openTelegramBot('standard')">
+            Начать с 3 дней free <span class="arrow"></span>
+          </button>
+        </div>
+        
+        <div class="pricing-card popular">
+          <div class="popular-badge">ПОПУЛЯРНЫЙ</div>
+          <h3>PRO</h3>
+          <p class="subtitle">Для профессионалов</p>
+          <div class="price">2,990₽<span> / месяц</span></div>
+          <p class="price-yearly">или 29,900₽ в год (экономия 5,980₽)</p>
+          <ul class="pricing-features">
+            <li>10 сохранённых стилей</li>
+            <li>Обработка больших объёмов текста</li>
+            <li>Голосовые сообщения + распознавание</li>
+            <li>Приоритетная генерация</li>
+            <li>История на сервере (включение/выключение)</li>
+          </ul>
+          <button class="btn-geo btn-geo--primary" onclick="openTelegramBot('pro')">
+            Начать с 3 дней free <span class="arrow"></span>
+          </button>
+        </div>
+        
+        <div class="pricing-card disabled" aria-disabled="true">
+          <div class="soon-badge">В РАЗРАБОТКЕ</div>
+          <h3>AGENCY</h3>
+          <p class="subtitle">Для команд и агентств</p>
+          <div class="price">—<span> / месяц</span></div>
+          <p class="price-yearly">Индивидуальные условия для больших команд</p>
+          <ul class="pricing-features">
+            <li>Безлимит стилей</li>
+            <li>До 5 пользователей</li>
+            <li>API доступ</li>
+            <li>White label</li>
+            <li>SLA поддержка 24/7</li>
+          </ul>
+          <button class="btn-geo btn-geo--outline" disabled>
+            Скоро <span class="arrow"></span>
+          </button>
+        </div>
+      </div>
+      <p class="muted" style="max-width:980px;margin:36px auto 0">
+        Можно перейти на любой тариф и обратно в любой момент. Вопросы по переходам и биллингу — 
+        <a href="https://t.me/TextStyle_main_bot" target="_blank" rel="noopener">@TextStyle_main_bot</a>.
+      </p>
+    </section>
+
+    <!-- ===== Reviews ===== -->
+    <section class="section" id="reviews">
+      <h2>Отзывы</h2>
+      <p class="muted">Скоро добавим скриншоты и видео с отзывами. Хотите оставить отзыв? Напишите в поддержку.</p>
+    </section>
+
+    <!-- ===== Referrals ===== -->
+    <section class="section" id="referrals">
+      <h2>Реферальная программа</h2>
+      <p class="muted" style="margin-bottom:18px">
+        Цель старта — быстро раскачать аудиторию и окупить подписку без боли. 
+        Делитесь персональной ссылкой — получайте бонусные дни доступа.
+      </p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:10px">
+        <div class="case-card">
+          <h3 style="margin-bottom:8px">Как это работает</h3>
+          <ol class="muted" style="line-height:1.7; padding-left:18px">
+            <li>Вы оформляете <strong>месячную подписку</strong> (STANDARD или PRO).</li>
+            <li>Получаете <strong>личную реферальную ссылку</strong> в боте.</li>
+            <li>Делитесь ссылкой. Регистрируется ваш друг — вам начисляется <strong>+7 дней</strong> (полмесяца) пробного доступа.</li>
+            <li>Друг оплатил подписку в течение 14 дней — вам дополнительно начисляется ещё <strong>+7 дней</strong>.</li>
+          </ol>
+        </div>
+        <div class="case-card">
+          <h3 style="margin-bottom:8px">Условия и ограничения</h3>
+          <ul class="muted" style="line-height:1.7; padding-left:18px">
+            <li>Бонусы суммируются, верхний предел — <strong>до 3 месяцев</strong> вперёд на аккаунте.</li>
+            <li>Бонусные дни активируются автоматически и продлевают текущий срок действия тарифа.</li>
+            <li>Засчитывается только первая покупка приглашённого пользователя.</li>
+            <li>Антифрод: саморегистрация, мультиаккаунты и боты — кик и обнуление бонусов.</li>
+            <li>Статус приглашённых и баланс дней видны в реферальном кабинете бота.</li>
+          </ul>
+        </div>
+        <div class="case-card">
+          <h3 style="margin-bottom:8px">Быстрый старт</h3>
+          <p class="muted" style="margin-bottom:12px">
+            Хочешь окупить подписку в первый месяц? Приведи 4 оплативших — получишь 2 месяца PRO в подарок.
+          </p>
+          <button class="btn-geo btn-geo--outline" onclick="openTelegramBot('referral')">
+            Открыть реферальный кабинет <span class="arrow"></span>
+          </button>
+        </div>
+      </div>
+
+      <p class="muted" style="margin-top:16px;font-size:14px">
+        Организатор оставляет за собой право менять правила и сроки акции. 
+        Текущие условия всегда отражены в боте и на этой странице.
+      </p>
+    </section>
+
+    <!-- ===== More Bots ===== -->
+    <section class="section" id="bots">
+      <h2>Ещё боты</h2>
+      <p class="muted">Каталог наших ботов для текста и продуктивности. В разработке.</p>
+      <button class="btn-geo btn-geo--outline" onclick="openTelegramBot('catalog')">
+        Ищу боты <span class="arrow"></span>
+      </button>
+    </section>
+
+    <!-- ===== Final CTA ===== -->
+    <section class="final-cta">
+      <h2>Пишите в 10 раз быстрее. Не теряя себя.</h2>
+      <p>3 дня бесплатно. Без привязки карты.</p>
+      <button class="btn-geo btn-geo--outline" onclick="openTelegramBot('footer')">
+        @TextStyle_main_bot <span class="arrow"></span>
+      </button>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer>
+    <p>© 2025 TextStyler. Telegram‑бот для умножения стиля письма.</p>
+    <p style="margin-top:10px">
+      Канал новостей: <a href="https://t.me/TextStyle_main_bot" target="_blank" rel="noopener">@TextStyle_main_bot</a> |
+      Поддержка: <a href="https://t.me/TextStyle_main_bot" target="_blank" rel="noopener">@TextStyle_main_bot</a> |
+      <a href="#" onclick="showTerms();return false;">Договор-оферта</a>
+    </p>
+  </footer>
+
+  <!-- ===== Sticky Support Button ===== -->
+  <button class="support-button" onclick="openTelegramBot('support')" title="Открыть бот в Telegram" aria-label="Открыть бот в Telegram">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M21.99 6.547L20.5 18.703c-.109 1.067-.812 1.336-1.646.833l-4.545-3.35-2.189 2.109c-.242.242-.445.445-.914.445l.326-4.631 8.438-7.627c.367-.326-.08-.508-.57-.182l-10.426 6.563-4.492-1.405c-.977-.304-.996-.977.203-1.445l17.57-6.77c.812-.296 1.524.198 1.26 1.455z" fill="currentColor"/>
+    </svg>
+  </button>
+
+  <!-- ===== Schema.org ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "TextStyler",
+    "applicationCategory": "WritingAssistant",
+    "operatingSystem": "Web",
+    "description": "ИИ-бот анализирует ДНК текста и создаёт цифровую копию вашего стиля письма.",
+    "offers": {
+      "@type": "Offer",
+      "price": "1490",
+      "priceCurrency": "RUB"
+    }
+  }
+  </script>
+
+  <!-- ===== JavaScript ===== -->
+  <script>
+    // ===== КОНФИГУРАЦИЯ =====
+    const CONFIG = {
+      telegramBot: 'TextStyle_main_bot',
+      metrikaId: '104675769',
+      carouselInterval: 5000,
+      bgLinesCount: 30
+    };
+
+    // ===== Smooth Anchor Scroll =====
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href').slice(1);
+        if (!targetId) return;
+        
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          e.preventDefault();
+          targetElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+          });
+        }
+      });
+    });
+
+    // ===== Mobile Menu =====
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mainNav = document.getElementById('mainNav');
+    
+    if (mobileMenuBtn) {
+      mobileMenuBtn.addEventListener('click', () => {
+        mainNav.classList.toggle('active');
+        mobileMenuBtn.textContent = mainNav.classList.contains('active') ? '✕' : '☰';
+      });
+    }
+
+    // ===== Background Lines =====
+    (function initBackgroundLines() {
+      const bg = document.getElementById('geometricBg');
+      if (!bg) return;
+      
+      const lines = [];
+      
+      for (let i = 0; i < CONFIG.bgLinesCount; i++) {
+        const line = document.createElement('div');
+        line.className = 'line';
+        line.style.width = (Math.random() * 200 + 50) + 'px';
+        line.style.height = '1px';
+        line.style.top = Math.random() * 100 + '%';
+        line.style.left = Math.random() * 100 + '%';
+        line.style.transform = `rotate(${Math.random() * 360}deg)`;
+        bg.appendChild(line);
+        lines.push(line);
+      }
+      
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            const scrollY = window.scrollY;
+            lines.forEach((line, i) => {
+              const speed = (i % 3 + 1) * 0.1;
+              line.style.transform = `rotate(${Math.random() * 360}deg) translateY(${scrollY * speed}px)`;
+            });
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+    })();
+
+    // ===== Theme Toggle =====
+    (function initThemeToggle() {
+      const root = document.documentElement;
+      const toggle = document.getElementById('themeToggle');
+      if (!toggle) return;
+      
+      // Load saved theme
+      const savedTheme = localStorage.getItem('textstyler_theme');
+      if (savedTheme) {
+        root.setAttribute('data-theme', savedTheme);
+        toggle.setAttribute('aria-checked', savedTheme === 'dark' ? 'true' : 'false');
+      }
+      
+      toggle.addEventListener('click', () => {
+        const currentTheme = root.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        
+        root.setAttribute('data-theme', newTheme);
+        toggle.setAttribute('aria-checked', newTheme === 'dark' ? 'true' : 'false');
+        localStorage.setItem('textstyler_theme', newTheme);
+      });
+    })();
+
+    // ===== Telegram Bot Helper =====
+    function openTelegramBot(source = 'unknown') {
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      const botUrl = `https://t.me/${CONFIG.telegramBot}`;
+      
+      // Track with Metrika
+      try {
+        if (typeof ym !== 'undefined') {
+          ym(CONFIG.metrikaId, 'reachGoal', 'open_bot', { source });
+        }
+      } catch (e) {
+        console.warn('Метрика недоступна:', e);
+      }
+      
+      if (isMobile) {
+        window.location.href = botUrl;
+      } else {
+        window.open(botUrl, '_blank', 'noopener,noreferrer');
+      }
+    }
+    
+    // Make function global
+    window.openTelegramBot = openTelegramBot;
+
+    // ===== Time Saver Calculator =====
+    (function initTimeCalculator() {
+      const slider = document.getElementById('minutesPerDay');
+      const minutesDisplay = document.getElementById('minutesValue');
+      const beforeDisplay = document.getElementById('beforeValue');
+      const afterDisplay = document.getElementById('afterValue');
+      const savedDisplay = document.getElementById('savedValue');
+      const monthDisplay = document.getElementById('monthValue');
+      const yearDisplay = document.getElementById('yearValue');
+      const fiveYearDisplay = document.getElementById('fiveYearValue');
+      const fiftyYearDisplay = document.getElementById('fiftyYearValue');
+      
+      if (!slider) return;
+
+      // Константа: бот экономит 75% времени
+      const SAVINGS_PERCENT = 0.75;
+
+      function updateCalculations() {
+        const minutesPerDayBefore = parseInt(slider.value);
+        
+        // Рассчитываем время ПОСЛЕ использования бота (25% от исходного)
+        const minutesPerDayAfter = Math.round(minutesPerDayBefore * (1 - SAVINGS_PERCENT));
+        
+        // Экономия в день
+        const savedPerDay = minutesPerDayBefore - minutesPerDayAfter;
+        
+        // Расчёты экономии за периоды
+        const savedPerMonth = savedPerDay * 30;
+        const savedPerYear = savedPerDay * 365;
+        const savedPerFiveYears = savedPerDay * 365 * 5;
+        const savedPerFiftyYears = savedPerDay * 365 * 50;
+        
+        // Конвертация в удобные единицы
+        const hoursPerMonth = (savedPerMonth / 60).toFixed(0);
+        const hoursPerYear = Math.round(savedPerYear / 60);
+        const daysPerFiveYears = Math.round(savedPerFiveYears / 60 / 24);
+        const daysPerFiftyYears = Math.round(savedPerFiftyYears / 60 / 24);
+        
+        // Обновление UI
+        minutesDisplay.textContent = minutesPerDayBefore;
+        beforeDisplay.textContent = minutesPerDayBefore;
+        afterDisplay.textContent = minutesPerDayAfter;
+        savedDisplay.textContent = savedPerDay;
+        
+        monthDisplay.textContent = hoursPerMonth;
+        yearDisplay.textContent = hoursPerYear;
+        fiveYearDisplay.textContent = daysPerFiveYears;
+        fiftyYearDisplay.textContent = daysPerFiftyYears;
+        
+        // Анимация значений
+        const animatedElements = [
+          beforeDisplay, afterDisplay, savedDisplay,
+          monthDisplay, yearDisplay, fiveYearDisplay, fiftyYearDisplay
+        ];
+        
+        animatedElements.forEach(el => {
+          el.style.transform = 'scale(1.1)';
+          setTimeout(() => {
+            el.style.transform = 'scale(1)';
+          }, 200);
+        });
+      }
+
+      slider.addEventListener('input', updateCalculations);
+      
+      // Добавляем transition для плавной анимации
+      const animatedElements = [
+        beforeDisplay, afterDisplay, savedDisplay,
+        monthDisplay, yearDisplay, fiveYearDisplay, fiftyYearDisplay
+      ];
+      
+      animatedElements.forEach(el => {
+        if (el) el.style.transition = 'transform 0.2s ease';
+      });
+      
+      // Инициализация
+      updateCalculations();
+    })();
+
+    // ===== Terms Modal =====
+    function showTerms() {
+      const terms = `ДОГОВОР-ОФЕРТА / УСЛОВИЯ ИСПОЛЬЗОВАНИЯ
+
+1. ОБЩИЕ ПОЛОЖЕНИЯ
+1.1. Настоящий документ является публичной офертой и регулирует порядок использования сервиса TextStyler.
+1.2. Используя сервис, пользователь подтверждает согласие со всеми условиями оферты.
+
+2. ПРЕДМЕТ ОФЕРТЫ
+2.1. Сервис TextStyler предоставляет доступ к функционалу генерации и хранения текстов с использованием искусственного интеллекта.
+2.2. Все услуги предоставляются в автоматическом режиме «как есть» (AS IS).
+
+3. ОГРАНИЧЕНИЕ ОТВЕТСТВЕННОСТИ
+3.1. Администрация сервиса не несёт ответственности за любые последствия использования или невозможности использования сервиса.
+
+4. ПРАВА И ОБЯЗАННОСТИ СТОРОН
+4.1. Пользователь обязуется не использовать сервис в противоправных целях.
+4.2. Администрация вправе изменять условия и стоимость тарифов без уведомления.
+
+5. ЗАКЛЮЧИТЕЛЬНЫЕ ПОЛОЖЕНИЯ
+5.1. Споры решаются в досудебном порядке.
+5.2. Использование сервиса означает согласие с условиями оферты.`;
+      
+      alert(terms);
+      // TODO: Заменить alert на модальное окно
+    }
+    
+    window.showTerms = showTerms;
+
+    // ===== CAROUSEL =====
+    (function initCarousel() {
+      const container = document.getElementById('carouselContainer');
+      const carousel = document.getElementById('heroCarousel');
+      const dotsContainer = document.getElementById('carouselDots');
+      
+      if (!container || !carousel || !dotsContainer) return;
+      
+      const slides = [...container.children];
+      const dotsArray = [];
+      let currentIndex = 0;
+      let autoplayTimer = null;
+      let isDragging = false;
+      let startX = 0;
+      let currentTranslate = 0;
+      let prevTranslate = 0;
+
+      // Create dots
+      slides.forEach((_, index) => {
+        const dot = document.createElement('button');
+        dot.className = 'dot';
+        dot.setAttribute('role', 'tab');
+        dot.setAttribute('aria-label', `Перейти к слайду ${index + 1}`);
+        dot.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
+        dot.addEventListener('click', () => goToSlide(index));
+        dotsContainer.appendChild(dot);
+        dotsArray.push(dot);
+      });
+
+      function updateSlides() {
+        container.style.transform = `translate3d(-${currentIndex * 100}%, 0, 0)`;
+        
+        dotsArray.forEach((dot, i) => {
+          dot.classList.toggle('active', i === currentIndex);
+          dot.setAttribute('aria-selected', i === currentIndex ? 'true' : 'false');
+        });
+        
+        slides.forEach((slide, i) => {
+          slide.setAttribute('aria-hidden', i !== currentIndex ? 'true' : 'false');
+        });
+      }
+
+      function goToSlide(index) {
+        currentIndex = (index + slides.length) % slides.length;
+        updateSlides();
+        restartAutoplay();
+      }
+
+      function nextSlide() {
+        goToSlide(currentIndex + 1);
+      }
+
+      function restartAutoplay() {
+        clearInterval(autoplayTimer);
+        autoplayTimer = setInterval(nextSlide, CONFIG.carouselInterval);
+      }
+
+      // Touch/Mouse drag
+      function touchStart(e) {
+        isDragging = true;
+        startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+        container.classList.add('dragging');
+        clearInterval(autoplayTimer);
+        
+        if (e.type.includes('mouse')) {
+          carousel.setPointerCapture(e.pointerId);
+        }
+      }
+
+      function touchMove(e) {
+        if (!isDragging) return;
+        
+        const currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+        currentTranslate = prevTranslate + currentX - startX;
+        
+        const translatePercent = (currentTranslate / carousel.offsetWidth) * 100;
+        container.style.transform = `translate3d(calc(-${currentIndex * 100}% + ${translatePercent}%), 0, 0)`;
+      }
+
+      function touchEnd(e) {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        container.classList.remove('dragging');
+        
+        const movedBy = currentTranslate - prevTranslate;
+        
+        if (Math.abs(movedBy) > 60) {
+          if (movedBy < 0) {
+            goToSlide(currentIndex + 1);
+          } else {
+            goToSlide(currentIndex - 1);
+          }
+        } else {
+          updateSlides();
+        }
+        
+        currentTranslate = 0;
+        prevTranslate = 0;
+        
+        if (e.type.includes('mouse')) {
+          carousel.releasePointerCapture(e.pointerId);
+        }
+        
+        restartAutoplay();
+      }
+
+      // Event listeners
+      carousel.addEventListener('pointerdown', touchStart);
+      carousel.addEventListener('pointermove', touchMove);
+      carousel.addEventListener('pointerup', touchEnd);
+      carousel.addEventListener('pointercancel', touchEnd);
+      
+      carousel.addEventListener('mouseenter', () => clearInterval(autoplayTimer));
+      carousel.addEventListener('mouseleave', restartAutoplay);
+      
+      // Keyboard navigation
+      carousel.setAttribute('tabindex', '0');
+      carousel.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') nextSlide();
+        if (e.key === 'ArrowLeft') goToSlide(currentIndex - 1);
+      });
+
+      // Initialize
+      updateSlides();
+      restartAutoplay();
+    })();
+
+    // ===== Yandex.Metrika =====
+    (function initMetrika() {
+      try {
+        (function(m,e,t,r,i,k,a){
+          m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+          m[i].l=1*new Date();
+          k=e.createElement(t);
+          a=e.getElementsByTagName(t)[0];
+          k.async=1;
+          k.src=r;
+          a.parentNode.insertBefore(k,a);
+        })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+        
+        ym(CONFIG.metrikaId, "init", {
+          clickmap: true,
+          trackLinks: true,
+          accurateTrackBounce: true,
+          webvisor: true
+        });
+      } catch (e) {
+        console.warn('Яндекс.Метрика не загружена:', e);
+      }
+    })();
+  </script>
+  
+  <noscript>
+    <div><img src="https://mc.yandex.ru/watch/104675769" style="position:absolute; left:-9999px;" alt="" /></div>
+  </noscript>
+</body>
+</html>
