@@ -1,0 +1,25 @@
+{
+  "site_name": "TextStyler",
+  "bot_handle": "TextStyle_main_bot",
+  "metrika_id": 104859506,
+  "n8n_base_url": "https://n8n.example.com/webhook/textstyle",
+  "airtable": {
+    "base_id": "appr8PCGGMxbHoY7Y",
+    "tables": {
+      "Leads": "Leads",
+      "Reviews": "Reviews",
+      "Payments": "Payments",
+      "Referrals": "Referrals"
+    }
+  },
+  "reviews": {
+    "public_endpoint": "/reviews.public",
+    "limit": 6
+  },
+  "group_invite": "https://t.me/+NMi8CyZza6M1NGEy",
+  "channel_invite": "https://t.me/+mIzTkLUAiNExMzYy",
+  "products": {
+    "STANDARD": "prt_TKGJLsybBsI4Hq8w",
+    "PRO": "prt_GiGtAMOsvYTBgC8X"
+  }
+}

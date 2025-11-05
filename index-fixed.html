@@ -8,10 +8,12 @@
   <meta name="keywords" content="TextСтиль-бот, ИИ копирайтер, тональность текста, стиль письма, генератор текста, цифровой двойник, tone of voice, ИИ бот" />
   <link rel="canonical" href="https://textstyler.neurofabrika.store/" />
   <meta name="robots" content="index,follow" />
-  
+
   <!-- Preconnect для производительности -->
   <link rel="preconnect" href="https://mc.yandex.ru">
   <link rel="dns-prefetch" href="https://t.me">
+
+  <link rel="stylesheet" href="/styles/lk.css" />
   
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
@@ -282,7 +284,7 @@
       </div>
 
       <div style="margin-top:18px">
-        <button class="btn-geo btn-geo--outline" onclick="openTelegramBot()" aria-label="Перейти в Telegram бота">
+        <button class="btn-geo btn-geo--outline" data-ym-target="hero_open_bot" onclick="openTelegramBot('hero')" aria-label="Перейти в Telegram бота">
           Перейти в бота <span class="arrow"></span>
         </button>
       </div>
@@ -298,87 +300,30 @@
       </div>
     </section>
 
-    <!-- ===== Time Saver Section ===== -->
-    <section class="time-saver">
-      <div class="time-saver-container">
-        <div class="time-saver-content">
-          <h2>Сколько времени ты тратишь на тексты?</h2>
-          <p>TextStyler экономит до 75% времени на создание контента. Двигай слайдер и смотри, сколько времени вернёшь себе.</p>
-          
-          <div class="calculator">
-            <h3>Калькулятор экономии времени</h3>
-            
-            <div class="time-input-group">
-              <label for="minutesPerDay">Сколько минут в день тратишь на тексты СЕЙЧАС?</label>
-              <input 
-                type="range" 
-                id="minutesPerDay" 
-                class="time-slider" 
-                min="15" 
-                max="240" 
-                value="60" 
-                step="15"
-                aria-label="Минуты в день"
-              />
-              <div class="time-value"><span id="minutesValue">60</span> минут/день</div>
+    <!-- ===== Compact Calculator ===== -->
+    <section id="calculator" aria-label="Калькулятор экономии времени">
+      <div class="phone-shell" role="group" aria-label="Смартфон с калькулятором">
+        <div class="phone-notch" aria-hidden="true"></div>
+        <div class="phone-screen">
+          <form class="calc-form" novalidate>
+            <h2 style="font-size:1.4rem;font-weight:800">Сколько времени вернёшь</h2>
+            <p class="calc-help" id="calc-help">Укажи текущие затраты и целевой процент экономии.</p>
+            <div class="calc-grid">
+              <label class="calc-field">
+                <span>Минут в день сейчас</span>
+                <input type="number" min="15" max="240" step="15" inputmode="numeric" data-field="minutes" value="60" aria-describedby="calc-help" />
+              </label>
+              <label class="calc-field">
+                <span>Экономия, %</span>
+                <input type="number" min="10" max="90" step="5" inputmode="numeric" data-field="save" value="75" aria-describedby="calc-help" />
+              </label>
             </div>
-
-            <div class="time-comparison">
-              <div class="before">
-                <div class="label">Без TextStyler</div>
-                <div class="value" id="beforeValue">60</div>
-                <div class="desc">минут/день</div>
-              </div>
-              <div class="after">
-                <div class="label">С TextStyler</div>
-                <div class="value" id="afterValue">15</div>
-                <div class="desc">минут/день</div>
-                <div class="savings-badge">
-                  Экономия: <span id="savedValue">45</span> мин/день
-                </div>
-              </div>
-            </div>
-
-            <div style="margin-top:32px">
-              <h4 style="font-size:18px;margin-bottom:16px;color:var(--muted)">Сколько времени сэкономишь:</h4>
-              <div class="savings-grid">
-                <div class="savings-card">
-                  <div class="label">В месяц</div>
-                  <div class="value" id="monthValue">22</div>
-                  <div class="unit">часа</div>
-                </div>
-                <div class="savings-card">
-                  <div class="label">В год</div>
-                  <div class="value" id="yearValue">273</div>
-                  <div class="unit">часов</div>
-                </div>
-                <div class="savings-card highlight">
-                  <div class="label">За 5 лет</div>
-                  <div class="value" id="fiveYearValue">57</div>
-                  <div class="unit">дней</div>
-                </div>
-                <div class="savings-card highlight">
-                  <div class="label">За 50 лет</div>
-                  <div class="value" id="fiftyYearValue">570</div>
-                  <div class="unit">дней</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div style="margin-top:32px">
-            <button class="btn-geo btn-geo--primary" onclick="openTelegramBot('calculator')">
-              Начать экономить время <span class="arrow"></span>
+            <output class="calc-result" data-result aria-live="polite" aria-atomic="true">Экономия: 45 мин/день</output>
+            <p class="calc-help" style="margin-top:4px">Рассчитываем по формуле: экономия = минуты × (процент ÷ 100).</p>
+            <button class="btn-geo btn-geo--primary" type="button" data-ym-target="calculator_open_bot" onclick="openTelegramBot('calculator')">
+              Перейти в бота <span class="arrow"></span>
             </button>
-          </div>
-        </div>
-
-        <div class="phone-mockup">
-          <img 
-            src="https://customer-assets.emergentagent.com/job_stylebot-check/artifacts/92u2nwit_205shots_so.png" 
-            alt="TextStyler на телефоне" 
-            loading="lazy"
-          />
+          </form>
         </div>
       </div>
     </section>
@@ -440,7 +385,7 @@
             <li>До 20 примеров для анализа</li>
             <li>Экспорт стилей</li>
           </ul>
-          <button class="btn-geo btn-geo--primary" onclick="openTelegramBot('standard')">
+          <button class="btn-geo btn-geo--primary" data-ym-target="pricing_standard_open_bot" onclick="openTelegramBot('standard')">
             Начать с 3 дней free <span class="arrow"></span>
           </button>
         </div>
@@ -458,7 +403,7 @@
             <li>Приоритетная генерация</li>
             <li>История на сервере (включение/выключение)</li>
           </ul>
-          <button class="btn-geo btn-geo--primary" onclick="openTelegramBot('pro')">
+          <button class="btn-geo btn-geo--primary" data-ym-target="pricing_pro_open_bot" onclick="openTelegramBot('pro')">
             Начать с 3 дней free <span class="arrow"></span>
           </button>
         </div>
@@ -483,66 +428,131 @@
       </div>
       <p class="muted" style="max-width:980px;margin:36px auto 0">
         Можно перейти на любой тариф и обратно в любой момент. Вопросы по переходам и биллингу — 
-        <a href="https://t.me/TextStyle_main_bot" target="_blank" rel="noopener">@TextStyle_main_bot</a>.
+        <a href="https://t.me/TextStyle_main_bot" target="_blank" rel="noopener" data-ym-target="pricing_support_bot">@TextStyle_main_bot</a>.
       </p>
     </section>
 
     <!-- ===== Reviews ===== -->
     <section class="section" id="reviews">
       <h2>Отзывы</h2>
-      <p class="muted">Скоро добавим скриншоты и видео с отзывами. Хотите оставить отзыв? Напишите в поддержку.</p>
+      <div class="tm-grid" data-autoplay="5000">
+        <article class="tm-card">
+          <p class="tm-text">Сервис экономит часы. Стиль текста сохраняется — читатели не заметили подмены.</p>
+          <footer class="tm-meta"><span>Анна, редактор</span></footer>
+        </article>
+        <article class="tm-card">
+          <p class="tm-text">PRO окупился за неделю. Генерирую рассылки и посты, иду только на финальный шлиф.</p>
+          <footer class="tm-meta"><span>Илья, маркетолог</span></footer>
+        </article>
+        <article class="tm-card">
+          <p class="tm-text">Интеграция по инструкции заняла 10 минут, поддержка реагирует за считанные часы.</p>
+          <footer class="tm-meta"><span>Мария, продюсер</span></footer>
+        </article>
+      </div>
+      <nav class="tm-nav" aria-label="Навигация по отзывам">
+        <button class="tm-prev" type="button" aria-label="Предыдущий отзыв"><span aria-hidden="true">‹</span></button>
+        <button class="tm-next" type="button" aria-label="Следующий отзыв"><span aria-hidden="true">›</span></button>
+      </nav>
     </section>
 
     <!-- ===== Referrals ===== -->
     <section class="section" id="referrals">
       <h2>Реферальная программа</h2>
-      <p class="muted" style="margin-bottom:18px">
-        Цель старта — быстро раскачать аудиторию и окупить подписку без боли. 
-        Делитесь персональной ссылкой — получайте бонусные дни доступа.
-      </p>
-
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:10px">
-        <div class="case-card">
-          <h3 style="margin-bottom:8px">Как это работает</h3>
-          <ol class="muted" style="line-height:1.7; padding-left:18px">
-            <li>Вы оформляете <strong>месячную подписку</strong> (STANDARD или PRO).</li>
-            <li>Получаете <strong>личную реферальную ссылку</strong> в боте.</li>
-            <li>Делитесь ссылкой. Регистрируется ваш друг — вам начисляется <strong>+7 дней</strong> (полмесяца) пробного доступа.</li>
-            <li>Друг оплатил подписку в течение 14 дней — вам дополнительно начисляется ещё <strong>+7 дней</strong>.</li>
+      <div class="ref-grid">
+        <div class="ref-card">
+          <h3>Как работает</h3>
+          <ol class="muted" style="padding-left:18px;line-height:1.7">
+            <li>Оформи месячную подписку STANDARD или PRO в боте.</li>
+            <li>Получи личную ссылку в разделе «Рефералы».</li>
+            <li>Друг зашёл — +7 дней. Оплатил за 14 дней — ещё +7.</li>
           </ol>
         </div>
-        <div class="case-card">
-          <h3 style="margin-bottom:8px">Условия и ограничения</h3>
-          <ul class="muted" style="line-height:1.7; padding-left:18px">
-            <li>Бонусы суммируются, верхний предел — <strong>до 3 месяцев</strong> вперёд на аккаунте.</li>
-            <li>Бонусные дни активируются автоматически и продлевают текущий срок действия тарифа.</li>
-            <li>Засчитывается только первая покупка приглашённого пользователя.</li>
-            <li>Антифрод: саморегистрация, мультиаккаунты и боты — кик и обнуление бонусов.</li>
-            <li>Статус приглашённых и баланс дней видны в реферальном кабинете бота.</li>
-          </ul>
+        <div class="ref-card">
+          <h3>Твой прогресс</h3>
+          <div class="ref-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="ref-bar" style="width:0%"></div>
+          </div>
+          <p class="ref-status" data-ref-status>Авторизуйтесь, чтобы увидеть статус.</p>
         </div>
-        <div class="case-card">
-          <h3 style="margin-bottom:8px">Быстрый старт</h3>
-          <p class="muted" style="margin-bottom:12px">
-            Хочешь окупить подписку в первый месяц? Приведи 4 оплативших — получишь 2 месяца PRO в подарок.
-          </p>
-          <button class="btn-geo btn-geo--outline" onclick="openTelegramBot('referral')">
-            Открыть реферальный кабинет <span class="arrow"></span>
+        <div class="ref-card">
+          <h3>Где ссылка</h3>
+          <p class="muted">Найдёшь её внутри бота в личном кабинете.</p>
+          <button class="btn-geo btn-geo--outline" data-ym-target="referral_open_bot" onclick="openTelegramBot('referral')">
+            Открыть в боте <span class="arrow"></span>
           </button>
         </div>
       </div>
+    </section>
 
-      <p class="muted" style="margin-top:16px;font-size:14px">
-        Организатор оставляет за собой право менять правила и сроки акции. 
-        Текущие условия всегда отражены в боте и на этой странице.
-      </p>
+    <!-- ===== Личный кабинет ===== -->
+    <section id="lk" aria-label="Личный кабинет" hidden>
+      <div class="lk-login">
+        <script
+          async
+          src="https://telegram.org/js/telegram-widget.js?22"
+          data-telegram-login="TEXTStyle_pro_bot"
+          data-size="large"
+          data-onauth="onTelegramAuth"
+          data-request-access="write"
+        ></script>
+      </div>
+      <div class="lk-authed" hidden>
+        <section class="lk-ref" aria-label="Рефералы">
+          <h3>Рефералы</h3>
+          <p>Ваша ссылка: <output data-ref-link></output></p>
+          <div class="ref-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="ref-bar" style="width:0%"></div>
+          </div>
+          <p class="ref-stats" data-ref-stats></p>
+        </section>
+        <section class="lk-review" aria-label="Оставить отзыв">
+          <h3>Отзыв</h3>
+          <div class="stars" role="radiogroup" aria-label="Оценка сервиса">
+            <button type="button" data-star="1" aria-label="1 звезда">★</button>
+            <button type="button" data-star="2" aria-label="2 звезды">★</button>
+            <button type="button" data-star="3" aria-label="3 звезды">★</button>
+            <button type="button" data-star="4" aria-label="4 звезды">★</button>
+            <button type="button" data-star="5" aria-label="5 звёзд">★</button>
+          </div>
+          <label>
+            Профдеятельность:
+            <select data-field="is_prof">
+              <option value="no">Нет</option>
+              <option value="yes">Да</option>
+            </select>
+          </label>
+          <label>
+            Текст отзыва
+            <textarea data-field="review_text" maxlength="1000" required></textarea>
+          </label>
+          <label class="muted">
+            <input type="checkbox" data-field="is_public" checked /> Показать публично
+          </label>
+          <button class="btn-geo btn-geo--primary" type="button" data-action="send-review">Отправить</button>
+          <p class="form-note" data-review-note></p>
+        </section>
+        <section class="lk-promo" aria-label="Промокод">
+          <h3>Промокод</h3>
+          <input type="text" data-field="promo" placeholder="Введите промокод" />
+          <button class="btn-geo btn-geo--outline" type="button" data-action="apply-promo">Применить</button>
+          <p class="form-note" data-promo-note></p>
+        </section>
+        <section class="lk-payments" aria-label="История оплат">
+          <h3>История оплат</h3>
+          <ul class="payments" data-payments></ul>
+          <p class="muted">Оплата пока доступна только в боте. Здесь отображается история из Airtable.</p>
+          <button class="btn-geo btn-geo--outline" data-ym-target="lk_open_bot" onclick="openTelegramBot('lk')">
+            Перейти в бота <span class="arrow"></span>
+          </button>
+        </section>
+      </div>
     </section>
 
     <!-- ===== More Bots ===== -->
     <section class="section" id="bots">
       <h2>Ещё боты</h2>
       <p class="muted">Каталог наших ботов для текста и продуктивности. В разработке.</p>
-      <button class="btn-geo btn-geo--outline" onclick="openTelegramBot('catalog')">
+      <button class="btn-geo btn-geo--outline" data-ym-target="bots_catalog_open_bot" onclick="openTelegramBot('catalog')">
         Ищу боты <span class="arrow"></span>
       </button>
     </section>
@@ -551,7 +561,7 @@
     <section class="final-cta">
       <h2>Пишите в 10 раз быстрее. Не теряя себя.</h2>
       <p>3 дня бесплатно. Без привязки карты.</p>
-      <button class="btn-geo btn-geo--outline" onclick="openTelegramBot('footer')">
+      <button class="btn-geo btn-geo--outline" data-ym-target="footer_open_bot" onclick="openTelegramBot('footer')">
         @TextStyle_main_bot <span class="arrow"></span>
       </button>
     </section>
@@ -561,14 +571,16 @@
   <footer>
     <p>© 2025 TextStyler. Telegram‑бот для умножения стиля письма.</p>
     <p style="margin-top:10px">
-      Канал новостей: <a href="https://t.me/TextStyle_main_bot" target="_blank" rel="noopener">@TextStyle_main_bot</a> |
-      Поддержка: <a href="https://t.me/TextStyle_main_bot" target="_blank" rel="noopener">@TextStyle_main_bot</a> |
-      <a href="#" onclick="showTerms();return false;">Договор-оферта</a>
+      Канал новостей: <a href="https://t.me/TextStyle_main_bot" target="_blank" rel="noopener" data-ym-target="footer_news_bot">@TextStyle_main_bot</a> |
+      Поддержка: <a href="https://t.me/TextStyle_main_bot" target="_blank" rel="noopener" data-ym-target="footer_support_bot">@TextStyle_main_bot</a> |
+      <a href="/docs/offer.html" target="_blank" rel="noopener" data-ym-target="offer_link">Договор-оферта</a> ·
+      <a href="/docs/offer.html#disclaimer" target="_blank" rel="noopener" data-ym-target="disclaimer_link">Отказ от ответственности</a>
+      <span class="muted" style="display:block;margin-top:6px">Сервис не заменяет профессиональную редактуру; ответственность за публикуемый контент несёт пользователь.</span>
     </p>
   </footer>
 
   <!-- ===== Sticky Support Button ===== -->
-  <button class="support-button" onclick="openTelegramBot('support')" title="Открыть бот в Telegram" aria-label="Открыть бот в Telegram">
+  <button class="support-button" data-ym-target="support_open_bot" onclick="openTelegramBot('support')" title="Открыть бот в Telegram" aria-label="Открыть бот в Telegram">
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path d="M21.99 6.547L20.5 18.703c-.109 1.067-.812 1.336-1.646.833l-4.545-3.35-2.189 2.109c-.242.242-.445.445-.914.445l.326-4.631 8.438-7.627c.367-.326-.08-.508-.57-.182l-10.426 6.563-4.492-1.405c-.977-.304-.996-.977.203-1.445l17.57-6.77c.812-.296 1.524.198 1.26 1.455z" fill="currentColor"/>
     </svg>
@@ -596,7 +608,7 @@
     // ===== КОНФИГУРАЦИЯ =====
     const CONFIG = {
       telegramBot: 'TextStyle_main_bot',
-      metrikaId: '104675769',
+      metrikaId: '104859506',
       carouselInterval: 5000,
       bgLinesCount: 30
     };
@@ -686,138 +698,6 @@
         localStorage.setItem('textstyler_theme', newTheme);
       });
     })();
-
-    // ===== Telegram Bot Helper =====
-    function openTelegramBot(source = 'unknown') {
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      const botUrl = `https://t.me/${CONFIG.telegramBot}`;
-      
-      // Track with Metrika
-      try {
-        if (typeof ym !== 'undefined') {
-          ym(CONFIG.metrikaId, 'reachGoal', 'open_bot', { source });
-        }
-      } catch (e) {
-        console.warn('Метрика недоступна:', e);
-      }
-      
-      if (isMobile) {
-        window.location.href = botUrl;
-      } else {
-        window.open(botUrl, '_blank', 'noopener,noreferrer');
-      }
-    }
-    
-    // Make function global
-    window.openTelegramBot = openTelegramBot;
-
-    // ===== Time Saver Calculator =====
-    (function initTimeCalculator() {
-      const slider = document.getElementById('minutesPerDay');
-      const minutesDisplay = document.getElementById('minutesValue');
-      const beforeDisplay = document.getElementById('beforeValue');
-      const afterDisplay = document.getElementById('afterValue');
-      const savedDisplay = document.getElementById('savedValue');
-      const monthDisplay = document.getElementById('monthValue');
-      const yearDisplay = document.getElementById('yearValue');
-      const fiveYearDisplay = document.getElementById('fiveYearValue');
-      const fiftyYearDisplay = document.getElementById('fiftyYearValue');
-      
-      if (!slider) return;
-
-      // Константа: бот экономит 75% времени
-      const SAVINGS_PERCENT = 0.75;
-
-      function updateCalculations() {
-        const minutesPerDayBefore = parseInt(slider.value);
-        
-        // Рассчитываем время ПОСЛЕ использования бота (25% от исходного)
-        const minutesPerDayAfter = Math.round(minutesPerDayBefore * (1 - SAVINGS_PERCENT));
-        
-        // Экономия в день
-        const savedPerDay = minutesPerDayBefore - minutesPerDayAfter;
-        
-        // Расчёты экономии за периоды
-        const savedPerMonth = savedPerDay * 30;
-        const savedPerYear = savedPerDay * 365;
-        const savedPerFiveYears = savedPerDay * 365 * 5;
-        const savedPerFiftyYears = savedPerDay * 365 * 50;
-        
-        // Конвертация в удобные единицы
-        const hoursPerMonth = (savedPerMonth / 60).toFixed(0);
-        const hoursPerYear = Math.round(savedPerYear / 60);
-        const daysPerFiveYears = Math.round(savedPerFiveYears / 60 / 24);
-        const daysPerFiftyYears = Math.round(savedPerFiftyYears / 60 / 24);
-        
-        // Обновление UI
-        minutesDisplay.textContent = minutesPerDayBefore;
-        beforeDisplay.textContent = minutesPerDayBefore;
-        afterDisplay.textContent = minutesPerDayAfter;
-        savedDisplay.textContent = savedPerDay;
-        
-        monthDisplay.textContent = hoursPerMonth;
-        yearDisplay.textContent = hoursPerYear;
-        fiveYearDisplay.textContent = daysPerFiveYears;
-        fiftyYearDisplay.textContent = daysPerFiftyYears;
-        
-        // Анимация значений
-        const animatedElements = [
-          beforeDisplay, afterDisplay, savedDisplay,
-          monthDisplay, yearDisplay, fiveYearDisplay, fiftyYearDisplay
-        ];
-        
-        animatedElements.forEach(el => {
-          el.style.transform = 'scale(1.1)';
-          setTimeout(() => {
-            el.style.transform = 'scale(1)';
-          }, 200);
-        });
-      }
-
-      slider.addEventListener('input', updateCalculations);
-      
-      // Добавляем transition для плавной анимации
-      const animatedElements = [
-        beforeDisplay, afterDisplay, savedDisplay,
-        monthDisplay, yearDisplay, fiveYearDisplay, fiftyYearDisplay
-      ];
-      
-      animatedElements.forEach(el => {
-        if (el) el.style.transition = 'transform 0.2s ease';
-      });
-      
-      // Инициализация
-      updateCalculations();
-    })();
-
-    // ===== Terms Modal =====
-    function showTerms() {
-      const terms = `ДОГОВОР-ОФЕРТА / УСЛОВИЯ ИСПОЛЬЗОВАНИЯ
-
-1. ОБЩИЕ ПОЛОЖЕНИЯ
-1.1. Настоящий документ является публичной офертой и регулирует порядок использования сервиса TextStyler.
-1.2. Используя сервис, пользователь подтверждает согласие со всеми условиями оферты.
-
-2. ПРЕДМЕТ ОФЕРТЫ
-2.1. Сервис TextStyler предоставляет доступ к функционалу генерации и хранения текстов с использованием искусственного интеллекта.
-2.2. Все услуги предоставляются в автоматическом режиме «как есть» (AS IS).
-
-3. ОГРАНИЧЕНИЕ ОТВЕТСТВЕННОСТИ
-3.1. Администрация сервиса не несёт ответственности за любые последствия использования или невозможности использования сервиса.
-
-4. ПРАВА И ОБЯЗАННОСТИ СТОРОН
-4.1. Пользователь обязуется не использовать сервис в противоправных целях.
-4.2. Администрация вправе изменять условия и стоимость тарифов без уведомления.
-
-5. ЗАКЛЮЧИТЕЛЬНЫЕ ПОЛОЖЕНИЯ
-5.1. Споры решаются в досудебном порядке.
-5.2. Использование сервиса означает согласие с условиями оферты.`;
-      
-      alert(terms);
-      // TODO: Заменить alert на модальное окно
-    }
-    
-    window.showTerms = showTerms;
 
     // ===== CAROUSEL =====
     (function initCarousel() {
@@ -971,9 +851,12 @@
       }
     })();
   </script>
-  
+
+  <script src="/scripts/main.js"></script>
+  <script src="/scripts/lk.js"></script>
+
   <noscript>
-    <div><img src="https://mc.yandex.ru/watch/104675769" style="position:absolute; left:-9999px;" alt="" /></div>
+    <div><img src="https://mc.yandex.ru/watch/104859506" style="position:absolute; left:-9999px;" alt="" /></div>
   </noscript>
 </body>
 </html>
